@@ -16,11 +16,7 @@
 
 > > 2. Simuler le fonctionnement : (i) créer la liste journalière de clients ; (ii) initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients. Les dates sont des entiers indiquant des minutes.
 > >
-> >    Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
-> >
-> > ```math
-> > X = −ln(1 − U )/λ
-> > ```
+> >    Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si $`U ∼ [0, 1]`$, alors $`X = −ln(1 − U )/λ`$
 > >
 
 > > 3. Créer et enregistrer dans un fichier la liste journalières des clients et les informations relatives à leur service (date d’arrivée, durée d’attente, date du début de service, date de fin de service, etc.).
