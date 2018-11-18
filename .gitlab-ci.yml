@@ -1,7 +1,7 @@
-image: docker:latest
+image: alpine:latest
 
 before_script:
-  - apk update -q && apk add -y -q gcc make
+  - apk update -q && apk add -q --no-cache gcc make musl-dev
   - mkdir bin
   - mkdir obj
 
