@@ -6,16 +6,10 @@ before_script:
   - mkdir bin
   - mkdir obj
 
-build-linux:
-  stage: build-linux
-  script: make
-  artifacts:
-    paths:
-      - bin
-
-build-windows:
-  stage: build-windows
+build:
+  stage: build
   script: 
+  - make
   - ./configure --host=x86_64-w64-mingw32
   - make
   artifacts:
