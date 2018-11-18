@@ -1,13 +1,23 @@
-image: alpine:latest
+image: ubuntu:18.04
 
 before_script:
-  - apk update -q && apk add -q --no-cache gcc make musl-dev
+  - apt update && apt -y full-upgrade
+  - apt install -y gcc make mingw-w64
   - mkdir bin
   - mkdir obj
 
-build:
-  stage: build
+build-linux:
+  stage: build-linux
   script: make
+  artifacts:
+    paths:
+      - bin
+
+build-windows:
+  stage: build-windows
+  script: 
+  - ./configure --host=x86_64-w64-mingw32
+  - make
   artifacts:
     paths:
       - bin
