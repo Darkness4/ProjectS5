@@ -8,7 +8,7 @@ before_script:
 build-linux:
   stage: build
   script: 
-  - apt install -y gcc make
+  - apt install -y make gcc
   - make
   artifacts:
     paths:
@@ -17,7 +17,7 @@ build-linux:
 build-windows:
   stage: build
   script: 
-  - apt install -y gcc-mingw-w64
+  - apt install -y make gcc-mingw-w64
   - make CC=x86_x64-w64-mingw32-gcc
   artifacts:
     paths:
