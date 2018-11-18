@@ -1,5 +1,7 @@
+image: docker:latest
+
 before_script:
-  - apt-get update -qq && apt-get install -y -qq gcc make
+  - apk update -q && apk add -y -q gcc make
   - mkdir bin
   - mkdir obj
 
