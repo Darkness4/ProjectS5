@@ -5,8 +5,8 @@ before_script:
   - mkdir bin
   - mkdir obj
 
-job1:
-  stage: link
+build:
+  stage: build
   script: make
   artifacts:
     paths:
