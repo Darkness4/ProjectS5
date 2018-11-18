@@ -6,4 +6,8 @@ before_script:
   - mkdir obj
 
 link:
+  stage: link
   script: make
+  artifacts:
+    paths:
+      - bin/
