@@ -55,3 +55,6 @@ html/
 latex/
 xml/
 .git/
+.vscode/
+obj/
+bin/

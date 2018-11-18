@@ -14,7 +14,7 @@ SRCDIR = src
 OBJDIR = obj
 BINDIR = bin
 
-# Get all file based on project structure
+# Get all files based on project structure
 SOURCES := $(wildcard $(SRCDIR)/*.c)
 INCLUDES := $(wildcard $(SRCDIR)/*.h)
 OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

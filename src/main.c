@@ -14,4 +14,10 @@
  * @date 17 Nov 2018
  */
 
-#include "projets5.h"
+#include "main.h"
+
+int main(void)
+{
+    return 0;
+}
+
