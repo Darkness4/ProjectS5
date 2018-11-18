@@ -1,5 +1,5 @@
 /**
- * @file projets5.c
+ * @file main.c
  * 
  * @brief Étude et simulation d’une file d’attente.
  * 
