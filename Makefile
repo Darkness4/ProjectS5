@@ -2,17 +2,17 @@
 TARGET = projetS5
 
 # Compiler
-CC = gcc
-CFLAGS = -c -Wall -Wextra -I .
+CC ?= gcc
+CFLAGS ?= -c -Wall -Wextra -I .
 
 # Linker
-LINKER = gcc
-LFLAGS = -Wall -I . -lm
+LINKER ?= $(CC)
+LFLAGS ?= -Wall -I . -lm
 
 # Project structure
-SRCDIR = src
-OBJDIR = obj
-BINDIR = bin
+SRCDIR ?= src
+OBJDIR ?= obj
+BINDIR ?= bin
 
 # Get all files based on project structure
 SOURCES := $(wildcard $(SRCDIR)/*.c)
