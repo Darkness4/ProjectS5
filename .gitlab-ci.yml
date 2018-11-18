@@ -2,7 +2,7 @@ image: ubuntu:18.04
 
 before_script:
   - apt update && apt -y full-upgrade
-  - apt install -y build-essential mingw-w64
+  - apt install -y build-essential autoconf mingw-w64
   - mkdir bin
   - mkdir obj
 
