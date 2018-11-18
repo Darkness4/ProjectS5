@@ -24,12 +24,14 @@ rm = rm -f
 
 # Link
 $(BINDIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(BINDIR)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
 	@echo "$(LINKER) $(OBJECTS) $(LFLAGS) -o $@"
 	@echo "Linking complete!"
 
 # Compile
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
+	@mkdir -p $(OBJDIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(CC) $(CFLAGS) -c $< -o $@"
 	@echo "Compiled "$<" successfully!"

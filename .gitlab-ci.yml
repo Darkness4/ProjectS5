@@ -2,14 +2,22 @@ image: ubuntu:18.04
 
 before_script:
   - apt update && apt -y full-upgrade
-  - apt install -y build-essential autoconf mingw-w64
   - mkdir bin
   - mkdir obj
 
-build:
+build-linux:
   stage: build
   script: 
+  - apt install -y gcc make
   - make
+  artifacts:
+    paths:
+      - bin
+
+build-windows:
+  stage: build
+  script: 
+  - apt install -y gcc-mingw-w64
   - make CC=x86_x64-w64-mingw32-gcc
   artifacts:
     paths:
