@@ -10,9 +10,7 @@ build:
   stage: build
   script: 
   - make
-  - autoconf
-  - ./configure --host=x86_64-w64-mingw32
-  - make
+  - make CC=x86_x64-w64-mingw32-gcc
   artifacts:
     paths:
       - bin
