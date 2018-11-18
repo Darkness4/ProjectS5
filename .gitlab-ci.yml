@@ -12,13 +12,13 @@ build-linux:
   - make
   artifacts:
     paths:
-      - bin
+      - bin/projetS5
 
 build-windows:
   stage: build
   script: 
-  - apt install -y make mingw-w64
-  - make CC=/usr/bin/x86_64-w64-mingw32-gcc
+  - apt install -y make gcc-mingw-w64-x86-64
+  - make CC=/usr/bin/x86_64-w64-mingw32-gcc TARGET=projetS5.exe
   artifacts:
     paths:
-      - bin
+      - bin/projetS5.exe
