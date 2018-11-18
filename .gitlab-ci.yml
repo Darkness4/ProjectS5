@@ -10,4 +10,4 @@ link:
   script: make
   artifacts:
     paths:
-      - bin/
+      - bin
