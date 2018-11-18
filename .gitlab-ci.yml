@@ -17,8 +17,8 @@ build-linux:
 build-windows:
   stage: build
   script: 
-  - apt install -y make gcc-mingw-w64-x86-64 mingw-w64
-  - make CC=x86_x64-w64-mingw32-gcc
+  - apt install -y make mingw-w64
+  - make CC=/usr/bin/x86_64-w64-mingw32-gcc
   artifacts:
     paths:
       - bin
