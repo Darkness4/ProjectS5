@@ -1,8 +1,8 @@
 image: ubuntu:18.04
 
 before_script:
-  - apt update && apt -y full-upgrade
-  - apt install -y gcc make mingw-w64
+  - apt -qq update && apt -y -qq full-upgrade
+  - apt install -qq -y gcc make mingw-w64
   - mkdir bin
   - mkdir obj
 
@@ -10,6 +10,7 @@ build:
   stage: build
   script: 
   - make
+  - export PATH=/mingw64/bin:$PATH
   - ./configure --host=x86_64-w64-mingw32
   - make
   artifacts:
