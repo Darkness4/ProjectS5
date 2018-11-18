@@ -25,11 +25,13 @@ rm = rm -f
 # Link
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+	@echo "$(LINKER) $(OBJECTS) $(LFLAGS) -o $@"
 	@echo "Linking complete!"
 
 # Compile
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(CC) $(CFLAGS) -c $< -o $@"
 	@echo "Compiled "$<" successfully!"
 
 .PHONY: clean
