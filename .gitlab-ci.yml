@@ -2,8 +2,6 @@ image: ubuntu:18.04
 
 before_script:
   - apt update && apt -y full-upgrade
-  - mkdir bin
-  - mkdir obj
 
 build-linux:
   stage: build
