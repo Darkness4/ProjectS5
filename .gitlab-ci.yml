@@ -13,6 +13,7 @@ build-linux:
   artifacts:
     paths:
       - bin/projetS5
+    expire_in: 1 week
 
 build-windows:
   stage: build
@@ -22,3 +23,4 @@ build-windows:
   artifacts:
     paths:
       - bin/projetS5.exe
+    expire_in: 1 week
