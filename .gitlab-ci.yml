@@ -10,7 +10,7 @@ build:
   stage: build
   script: 
   - make
-  - export PATH=/mingw64/bin:$PATH
+  - autoconf
   - ./configure --host=x86_64-w64-mingw32
   - make
   artifacts:
