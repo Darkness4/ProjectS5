@@ -41,6 +41,6 @@ struct ListeClients {
     struct Client* HEAD;
 };
 
-void creerClient(struct ListeClients* listeclients) 
+void creerClient(struct ListeClients* listeclients);
 
 #endif  // _fonction_h
