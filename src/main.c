@@ -15,26 +15,16 @@
  */
 
 #include "main.h"
+#include "fonction.h"
 
-
-/**
- * @brief Modélisation d'un client.
- * 
- */
-struct client{
-  /**
-   * @brief Pointeur vers client suivant.
-   * 
-   */
-  struct client *suivant;
-  /**
-   * @brief Minute d'arrivée.
-   * 
-   */
-  int arrivee;
-};
 
 int main(void)
 {
-    return 0;
+  struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
+  listeclients -> HEAD = NULL;
+
+  creerClient(listeclients);
+  creerClient(listeclients);
+
+  return 0;
 }
