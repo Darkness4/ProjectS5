@@ -18,10 +18,19 @@
 
 
 /**
- µ @brief Modélisation d'un client
+ * @brief Modélisation d'un client.
+ * 
  */
 struct client{
+  /**
+   * @brief Pointeur vers client suivant.
+   * 
+   */
   struct client *suivant;
+  /**
+   * @brief Minute d'arrivée.
+   * 
+   */
   int arrivee;
 };
 
