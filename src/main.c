@@ -16,11 +16,14 @@
 
 #include "main.h"
 
+
+/**
+ µ @brief Modélisation d'un client
+ */
 struct client{
   struct client *suivant;
   int arrivee;
 };
-
 
 int main(void)
 {
