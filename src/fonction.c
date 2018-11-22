@@ -14,43 +14,59 @@
  * 
  * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire (de type int) compris entre 0 et RAND_MAX.
  * 
- * Le guichet travaille 510 minutes.
+ * Le guichet travaille au 510 minutes.
  * 
  * @author Marc NGUYEN
  * @author Mathieu POIGNANT
  * @date 17 Nov 2018
  */
 
-#include "fonction.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-const int min = 0;
-const int max = 60;
-const int lambda = 1;
+#include "fonction.h"
 
+const int MIN = 0;
+const int MAX = 60;
+const int LAMBDA = 2;
+
+
+/**
+ * @brief Crée et ajoute un client à la liste.
+ * 
+ * @param listeclients Liste des clients avec un pointeur HEAD.
+ */
 void creerClient(struct ListeClients* listeclients) {
     struct Client *nouvClient = (struct Client *)malloc(sizeof(struct Client));
-    double U = rand()/RAND_MAX;
-    nouvClient -> duree = rand() % (max + 1 - min) + min;
-    if (listeclients -> HEAD != NULL) {
-        struct Client *curseur = listeclients -> HEAD;
+    double U = (double)rand()/RAND_MAX;  // U prend une valeur entre [0, 1]
+    int duree = rand() % (MAX + 1 - MIN) + MIN;  // duree prend un valeur entre [min, max]
+    if (listeclients -> HEAD != NULL) {  // Cas : "Il existe un précédent"
+        struct Client *dernierClient = listeclients -> HEAD;
 
-        while (curseur -> suivant != NULL)
-            curseur = curseur -> suivant;
+        // Déplacement du curseur vers le derner
+        while (dernierClient -> suivant != NULL)
+            dernierClient = dernierClient -> suivant;
 
-        nouvClient -> arrivee = curseur -> arrivee - log(1-U)/lambda;
+        // Ajout de données
+        nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
+        nouvClient -> attente = dernierClient -> fin_service - nouvClient -> arrivee;
+        nouvClient -> fin_service = nouvClient -> arrivee + duree;
+
+        // Append
         nouvClient -> suivant = NULL;
-        nouvClient -> precedent = curseur;
-        curseur -> suivant = nouvClient;
+        nouvClient -> precedent = dernierClient;
+        dernierClient -> suivant = nouvClient;
     } else {
-        nouvClient -> arrivee = -log(1-U)/lambda;
+        nouvClient -> arrivee = (int)(-log(1-U)/LAMBDA);
+        nouvClient -> fin_service = nouvClient -> arrivee + duree;
         nouvClient -> suivant = NULL;
         listeclients -> HEAD = nouvClient;
     }
-
 }
 
+
+// Tests
 /*int main(void)
 {
     struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));

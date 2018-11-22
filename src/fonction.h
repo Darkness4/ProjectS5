@@ -1,26 +1,30 @@
 #ifndef _fonction_h
 #define _fonction_h
 
-#include <stdlib.h>
-// Prototypes
-// ----------
 /**
  * @brief Modélisation d'un client.
- * 
  */
 struct Client{
   /**
    * @brief Pointeur vers client suivant.
-   * 
    */
   struct Client *suivant;
+  /**
+   * @brief Pointeur vers client précédent.
+   */
   struct Client *precedent;
   /**
-   * @brief Minute d'arrivée.
-   * 
+   * @brief Date d'arrivée en minute.
    */
   int arrivee;
-  int duree;
+  /**
+   * @brief Date de fin du service en minute.
+   */
+  int fin_service;
+  /**
+   * @brief Durée d'attente.
+   */
+  int attente;
 };
 
 
@@ -41,6 +45,8 @@ struct ListeClients {
     struct Client* HEAD;
 };
 
+// Prototypes
+// ----------
 void creerClient(struct ListeClients* listeclients);
 
 #endif  // _fonction_h

@@ -14,8 +14,10 @@
  * @date 17 Nov 2018
  */
 
-#include "main.h"
+#include <stdlib.h>
+
 #include "fonction.h"
+#include "main.h"
 
 
 int main(void)
