@@ -3,7 +3,7 @@ TARGET ?= projetS5
 
 # Compiler
 CC ?= gcc
-CFLAGS ?= -c -Wall -Wextra -lm -I .
+CFLAGS ?= -Wall -Wextra -lm -I .
 
 # Linker
 LINKER ?= $(CC)
@@ -29,6 +29,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
 	@echo "$(LINKER) $(OBJECTS) $(LFLAGS) -o $@"
 	@echo "Linking complete!"
+
 
 # Compile
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
