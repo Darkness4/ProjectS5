@@ -1,21 +1,21 @@
 /**
  * @file fonction.c
- * 
+ *
  * @brief Simulateur de guichet.
- * 
+ *
  * Fonctions permettant de faire simuler le fonctionnement d'un guichet.
- * 
+ *
  * 1. Créer la liste journalière de clients;
- * 2. Initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients. 
- * 
+ * 2. Initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients.
+ *
  * Les dates sont des entiers indiquant des minutes.
- * 
+ *
  * Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors X = −ln(1 − U )/λ.
- * 
+ *
  * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire (de type int) compris entre 0 et RAND_MAX.
- * 
+ *
  * Le guichet travaille au 510 minutes.
- * 
+ *
  * @author Marc NGUYEN
  * @author Mathieu POIGNANT
  * @date 17 Nov 2018
@@ -34,7 +34,7 @@ const int LAMBDA = 2;
 
 /**
  * @brief Crée et ajoute un client à la liste.
- * 
+ *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */
 void creerClient(struct ListeClients* listeclients) {
@@ -50,8 +50,15 @@ void creerClient(struct ListeClients* listeclients) {
 
         // Ajout de données
         nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
+        //vérification d'une attente du client
+        if(dernierClient->fin_service < nouvClient->arrivee){
+          nouvClient->attente=0;
+          nouvClient->fin_service=nouvClient->arrivee+duree;
+        }
+
+        else{
         nouvClient -> attente = dernierClient -> fin_service - nouvClient -> arrivee;
-        nouvClient -> fin_service = nouvClient -> arrivee + duree;
+        nouvClient -> fin_service = dernierClient->fin_service + durée;}
 
         // Append
         nouvClient -> suivant = NULL;
@@ -76,4 +83,3 @@ void creerClient(struct ListeClients* listeclients) {
     creerClient(listeclients);
     return 0;
 }*/
-
