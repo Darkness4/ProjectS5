@@ -37,7 +37,7 @@ const int LAMBDA = 2;
  *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */
-void creerClient(struct ListeClients* listeclients) {
+int creerClient(struct ListeClients* listeclients) {
     struct Client *nouvClient = (struct Client *)malloc(sizeof(struct Client));
     double U = (double)rand()/RAND_MAX;  // U prend une valeur entre [0, 1]
     int duree = rand() % (MAX + 1 - MIN) + MIN;  // duree prend un valeur entre [min, max]
@@ -51,7 +51,7 @@ void creerClient(struct ListeClients* listeclients) {
         // Ajout de données
         nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
         //vérification d'une attente du client
-        if(dernierClient->fin_service < nouvClient->arrivee) {
+        if(dernierClient -> fin_service < nouvClient->arrivee) {
             nouvClient -> attente = 0;
             nouvClient -> fin_service = nouvClient -> arrivee + duree;
         } else {
@@ -69,16 +69,33 @@ void creerClient(struct ListeClients* listeclients) {
         nouvClient -> suivant = NULL;
         listeclients -> HEAD = nouvClient;
     }
+    return nouvClient -> arrivee;
 }
 
 
-// Tests
-/*int main(void)
-{
+/**
+ * @brief Créer la liste journalière.
+ * 
+ * @return struct ListeClients* Liste des clients.
+ */
+struct ListeClients *creerListeJournaliere(void) {
     struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
     listeclients -> HEAD = NULL;
+    while (creerClient(listeclients) < 510);  // Créer un client jusqu'à 510 min
+    popClient(listeclients);  // Ejecte le dernier qui est > 510
+    return listeclients;
+}
 
-    creerClient(listeclients);
-    creerClient(listeclients);
-    return 0;
-}*/
+
+/**
+ * @brief Crée et ajoute un client à la liste.
+ *
+ * @param listeclients Liste des clients avec un pointeur HEAD.
+ */
+void popClient(struct ListeClients* listeclients) {
+    struct Client *dernierClient = listeclients -> HEAD;
+    while (dernierClient -> suivant != NULL)
+        dernierClient = dernierClient -> suivant;
+    dernierClient -> precedent -> suivant = NULL;
+    free(dernierClient);
+}
