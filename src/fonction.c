@@ -51,14 +51,13 @@ void creerClient(struct ListeClients* listeclients) {
         // Ajout de données
         nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
         //vérification d'une attente du client
-        if(dernierClient->fin_service < nouvClient->arrivee){
-          nouvClient->attente=0;
-          nouvClient->fin_service=nouvClient->arrivee+duree;
+        if(dernierClient->fin_service < nouvClient->arrivee) {
+            nouvClient -> attente = 0;
+            nouvClient -> fin_service = nouvClient -> arrivee + duree;
+        } else {
+            nouvClient -> attente = dernierClient -> fin_service - nouvClient -> arrivee;
+            nouvClient -> fin_service = dernierClient -> fin_service + duree;
         }
-
-        else{
-        nouvClient -> attente = dernierClient -> fin_service - nouvClient -> arrivee;
-        nouvClient -> fin_service = dernierClient->fin_service + durée;}
 
         // Append
         nouvClient -> suivant = NULL;

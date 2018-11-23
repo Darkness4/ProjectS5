@@ -17,7 +17,6 @@
 #include <stdlib.h>
 
 #include "fonction.h"
-#include "main.h"
 
 
 int main(void)
