@@ -13,3 +13,10 @@
  */
 
 #include "manip_fichier.h"
+struct Performance {
+  double moy_file;
+  int taille_max;
+  double deb_moy;
+  double taux_trait;
+  double temps_reponse_moy;
+}
