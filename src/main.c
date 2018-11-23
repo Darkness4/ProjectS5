@@ -21,11 +21,7 @@
 
 int main(void)
 {
-  struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
-  listeclients -> HEAD = NULL;
-
-  creerClient(listeclients);
-  creerClient(listeclients);
+  struct ListeClients *listeclients = creerListeJournaliere();
 
   return 0;
 }
