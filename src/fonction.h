@@ -47,6 +47,8 @@ struct ListeClients {
 
 // Prototypes
 // ----------
-void creerClient(struct ListeClients* listeclients);
+int creerClient(struct ListeClients* listeclients);
+void popClient(struct ListeClients* listeclients);
+struct ListeClients *creerListeJournaliere(void);
 
 #endif  // _fonction_h

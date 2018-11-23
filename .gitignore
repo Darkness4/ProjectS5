@@ -56,5 +56,6 @@ latex/
 xml/
 .git/
 .vscode/
+.vs/
 obj/
 bin/
