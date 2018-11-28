@@ -50,8 +50,8 @@ int creerClient(struct ListeClients* listeclients) {
 
         // Ajout de données
         nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
-        //vérification d'une attente du client
-        if(dernierClient -> fin_service < nouvClient->arrivee) {
+        // Vérification d'une attente du client
+        if(dernierClient -> fin_service < nouvClient -> arrivee) {  // Cas : "Il n'attend pas"
             nouvClient -> attente = 0;
             nouvClient -> fin_service = nouvClient -> arrivee + duree;
         } else {
@@ -88,7 +88,7 @@ struct ListeClients *creerListeJournaliere(void) {
 
 
 /**
- * @brief Crée et ajoute un client à la liste.
+ * @brief Ejecte le dernier client de la liste.
  *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */
