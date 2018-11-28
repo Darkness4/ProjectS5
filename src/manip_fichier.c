@@ -19,14 +19,23 @@
 #include "fonction.h"
 #include "manip_fichier.h"
 
-const int MINUTE_FERMETURE = 540;  // Heure de fermeture du guichet
+/**
+ * @brief Heure en minutes du fermeture de la banque.
+ */
+const int MINUTE_FERMETURE = 540;
+/**
+ * @brief Heure en minute du début du travail.
+ */
 const int OFFSET_TRAVAIL = 510;
+/**
+ * @brief Nom du fichier stockant la liste journalière des clients.
+ */
 const char* FICHIER_DATA = "Simulation.txt";
 
 
 /**
  * @brief Convertit les Minutes en Heure et retourne le reste.
- * 
+ *
  * @param minutes_to_hour Minutes convertit en Heure.
  * @return int Minutes restantes.
  */
@@ -39,6 +48,19 @@ int convert_Minutes_to_Hour(int *minutes_to_hour) {
 
 /**
  * @brief Rentre la liste des clients dans le fichier.
+ *
+ * Ouvre FICHIER_DATA et écrit les données issu de ListeClients, liste chainée.
+ *
+ * Sachant que les données de ListeClients sont en minutes sans offset, on
+ * applique OFFSET_TRAVAIL pour décaler en minutes.
+ *
+ * Une ligne de FICHIER_DATA est un client.
+ *
+ * Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+ *
+ * | Arrivee | Attente | Début du service | Fin du service |
+ * |:-------:|:-------:|:----------------:|:--------------:|
+ * |  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
  *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */
@@ -71,6 +93,25 @@ void ecrireList(struct ListeClients *listeclients) {
 
 /**
  * @brief Retourne la taille moyenne de la file d'attente issu de FICHIER_DATA.
+ *
+ * Ouvre FICHIER_DATA et compte pour chaque minute, le nombre de personnes 
+ * présentes dans la file d'attente. En divisant par la durée de travail, on 
+ * obtient la taille moyenne de la file d'attente.
+ *
+ * Une ligne de FICHIER_DATA est un client.
+ *
+ * Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+ *
+ * | Arrivee | Attente | Début du service | Fin du service |
+ * |:-------:|:-------:|:----------------:|:--------------:|
+ * |  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
+ *
+ * Les HH:MM sont convertit en minutes.
+ *
+ * Une personne est considéré "en attente" quand elle remplis ces deux 
+ * conditions :
+ * - Elle est arrivée.
+ * - Elle n'est pas encore servis.
  *
  * @return double Taille moyenne de la file d'attente.
  */
@@ -125,6 +166,25 @@ double fileMoy(void) {
 /**
  * @brief Retourne la taille maximale de la file d'attente issu de FICHIER_DATA.
  *
+ * Ouvre FICHIER_DATA et compte pour chaque minute, le nombre de personnes 
+ * présentes dans la file d'attente. On trouve la taille maximale de la file 
+ * d'attente par la méthode naive (max temporaire et recherche du prochain max).
+ *
+ * Une ligne de FICHIER_DATA est un client.
+ *
+ * Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+ *
+ * | Arrivee | Attente | Début du service | Fin du service |
+ * |:-------:|:-------:|:----------------:|:--------------:|
+ * |  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
+ *
+ * Les HH:MM sont convertit en minutes.
+ *
+ * Une personne est considéré "en attente" quand elle remplis ces deux 
+ * conditions :
+ * - Elle est arrivée.
+ * - Elle n'est pas encore servis.
+ *
  * @return double Taille maximale de la file d'attente.
  */
 int fileMax(void) {
@@ -159,8 +219,8 @@ int fileMax(void) {
       arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
 
       if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
-        if (arrivee_min < i) nPersonnes++; // On ne compte que ceux qui SONT arrivées
-        else break;// Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
+        if (arrivee_min < i) nPersonnes++;  // On ne compte que ceux qui SONT arrivées
+        else break;  // Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
       }
     }  // Il y a {nPersonnes} en train d'attendre à cette minute {i}.
   
@@ -178,6 +238,11 @@ int fileMax(void) {
 /**
  * @brief Retourne le débit moyen de la file d'attente issu de FICHIER_DATA.
  *
+ * Ouvre FICHIER_DATA et compte le nombre de clients.
+ * Débit moyen = Nombre total de client / Durée toale
+ * 
+ * Une ligne de FICHIER_DATA est un client.
+ * 
  * @return double Débit moyen de la file d'attente.
  */
 double debMoy(void) {
@@ -214,6 +279,23 @@ double debMoy(void) {
 
 /**
  * @brief Retourne le taux de clients non traitées de la file d'attente issu de FICHIER_DATA.
+ *
+ * Ouvre FICHIER_DATA et compte le nombre de personnes présentes dans la file 
+ * d'attente n'ayant pas été servis. Taux = Nombre/Total.
+ *
+ * Une ligne de FICHIER_DATA est un client.
+ *
+ * Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+ *
+ * | Arrivee | Attente | Début du service | Fin du service |
+ * |:-------:|:-------:|:----------------:|:--------------:|
+ * |  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
+ *
+ * Les HH:MM sont convertit en minutes.
+ *
+ * Une personne est considéré "ne peut être servie" quand elle remplit cette 
+ * condition :
+ * - La durée de service dépasse la fermeture de la banque.
  *
  * @return double Taux de clients non traitées de la file d'attente.
  */
@@ -256,6 +338,21 @@ double tauxNonTraites(void) {
 
 /**
  * @brief Retourne le temps de réponse moyen de la file d'attente issu de FICHIER_DATA.
+ *
+ * Ouvre FICHIER_DATA et calcule le temps de réponse moyen.
+ * Temps de réponse moyen = Somme(Temps de réponse) / Nombre de clients.
+ *
+ * Une ligne de FICHIER_DATA est un client.
+ *
+ * Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+ *
+ * | Arrivée | Attente | Début du service | Fin du service |
+ * |:-------:|:-------:|:----------------:|:--------------:|
+ * |  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
+ *
+ * Les HH:MM sont convertit en minutes.
+ *
+ * Le temps de réponse = {Fin du service} - {Arrivée}.
  *
  * @return double Temps de réponse moyen de la file d'attente.
  */

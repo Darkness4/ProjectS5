@@ -1,3 +1,8 @@
+/** 
+ * @dir src
+ * @brief Dossier code source
+ */
+
 /**
  * @file main.c
  *
@@ -23,13 +28,19 @@ extern const char* FICHIER_DATA;
 extern const char* FICHIER_TABLEAU;
 
 
+/**
+ * @brief Fonction main.
+ */
 int main(void) {
   printf("Bienvenue au simulateur de file d'attente.\n");
+
   printf("Simulation en cours...\n");
   struct ListeClients *listeclients = creerListeJournaliere();
   printf("Simulation terminé.\n");
+
   ecrireList(listeclients);
   printf("Résultats enregistrées dans %s.\n", FICHIER_DATA);
+
   ecrireTableau(fileMoy(), fileMax(), debMoy(), tauxNonTraites(), tempsRep());
   printf("Performances enregistrées dans %s.\n", FICHIER_TABLEAU);
   return 0;

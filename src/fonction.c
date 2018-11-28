@@ -6,15 +6,21 @@
  * Fonctions permettant de faire simuler le fonctionnement d'un guichet.
  *
  * 1. Créer la liste journalière de clients;
- * 2. Initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients.
+ * 2. Initialiser la date d’arrivée, la durée d’attente et la date de la fin de
+ * service de chacun des clients.
  *
  * Les dates sont des entiers indiquant des minutes.
  *
- * Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors X = −ln(1 − U )/λ.
+ * Le principe suivant permet de générer des réalisations d’une variable
+ * aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
+ * X = −ln(1 − U )/λ.
  *
- * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire (de type int) compris entre 0 et RAND_MAX.
+ * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire 
+ * (de type int) compris entre 0 et RAND_MAX.
  *
- * Le guichet travaille pendant 540 minutes. Ferme l'accès à 510 minutes. Offset 510 minutes;
+ * Le guichet travaille pendant 540 minutes (17h30-8h30).
+ * Ferme l'accès à 510 minutes (17h-8h30).
+ * Offset 510 minutes (8h30).
  *
  * @author Marc NGUYEN
  * @author Mathieu POIGNANT
@@ -27,13 +33,43 @@
 
 #include "fonction.h"
 
-const int MIN = 5;  // duree prend un valeur entre [MIN, MAX]
+/**
+ * @brief duree prend un valeur entre [MIN, MAX] suivant la loi uniforme.
+ */
+const int MIN = 5;
+/**
+ * @brief duree prend un valeur entre [MIN, MAX] suivant la loi uniforme.
+ */
 const int MAX = 10;
-const float LAMBDA = 0.1;  // Selon la loi exponentielle
-const int MINUTE_ACCEPTE = 510;  // 510 minutes acceptés
+/**
+ * @brief Constante de la loi exponentielle.
+ * 
+ * L'arrivée d'un client suit la loi exponentielle.
+ * Le principe suivant permet de générer des réalisations d’une variable
+ * aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
+ * X = −ln(1 − U )/λ.
+ */
+const float LAMBDA = 0.1;
+/**
+ * @brief Heure en minutes de fermeture de l'accès.
+ */
+const int MINUTE_ACCEPTE = 510;
 
 /**
  * @brief Crée et ajoute un client à la liste.
+ * 
+ * Etapes:
+ * - Allocation de mémoire ;
+ * - Initialise les probabilités ;
+ * - Ajoute un Client à la liste chaîné ListeClients ;
+ *
+ * Avant d'ajouter un Client, on identifie le cas : "Somme-nous en phase init?"
+ * L'ajout d'un Client nécessite 3 variables et 2 pointeurs :
+ * - arrivee = offset + (-log(1-U)/LAMBDA) ; avec U ∼ [0, 1]
+ * - fin_service = durée + arrivee ;
+ * - attente = fin_service de Client précédent - arrivee du nouveau Client
+ * - suivant = NULL ;
+ * - précédent = dernierClient ;
  *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */
@@ -76,6 +112,13 @@ int creerClient(struct ListeClients* listeclients) {
 /**
  * @brief Créer la liste journalière.
  *
+ * Génère des clients en répétant l'appel creerClient. 
+ * Comme creerClient retourne la minute d'arrivée du dernier Client, on peut en
+ * créer tant que arrivee < MINUTE_ACCEPTE (heure où les clients peuvent 
+ * toujours rentrer).
+ * 
+ * On éjecte le dernier, car il dépasse MINUTE_ACCEPTE.
+ * 
  * @return struct ListeClients* Liste des clients.
  */
 struct ListeClients *creerListeJournaliere(void) {
@@ -91,6 +134,8 @@ struct ListeClients *creerListeJournaliere(void) {
 
 /**
  * @brief Ejecte le dernier client de la liste.
+ *
+ * On restaure les pointeurs et on libère la mémoire.
  *
  * @param listeclients Liste des clients avec un pointeur HEAD.
  */

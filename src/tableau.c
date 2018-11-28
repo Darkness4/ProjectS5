@@ -13,6 +13,9 @@
 #include "tableau.h"
 #include <stdio.h>
 
+/**
+ * @brief Nom du fichier stockant le tableau de bord.
+ */
 const char* FICHIER_TABLEAU = "Tableau de Bord.txt";
 
 
