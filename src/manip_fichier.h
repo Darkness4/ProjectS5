@@ -8,7 +8,7 @@ void ecrireList(struct ListeClients *tete);
 double fileMoy(void);
 int fileMax(void);
 double debMoy(void);
-double tauxTraite(void);
+double tauxNonTraites(void);
 double tempsRep(void);
 
 #endif  // _manip_fichier_h

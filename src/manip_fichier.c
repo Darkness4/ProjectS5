@@ -19,7 +19,7 @@
 #include "fonction.h"
 #include "manip_fichier.h"
 
-const int HEURE_FERMETURE = 540;  // Heure de fermeture du guichet
+const int MINUTE_FERMETURE = 540;  // Heure de fermeture du guichet
 const int OFFSET_TRAVAIL = 510;
 const char* FICHIER_DATA = "Simulation.txt";
 
@@ -70,9 +70,9 @@ void ecrireList(struct ListeClients *listeclients) {
 
 
 /**
- * @brief Retourne la taille moyenne de la file issu de Simulation.txt.
+ * @brief Retourne la taille moyenne de la file d'attente issu de FICHIER_DATA.
  *
- * @return double Taille moyenne de la file.
+ * @return double Taille moyenne de la file d'attente.
  */
 double fileMoy(void) {
   double file_moy;  // Moyenne à retourner
@@ -97,36 +97,35 @@ double fileMoy(void) {
   }
 
   // Calcul {nPersonnes} en attente pour chaque minute
-  for(int i = 0; i <= HEURE_FERMETURE; i++) {
+  for(int i = 0; i <= MINUTE_FERMETURE; i++) {
     while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
                                                                   &attente_h, &attente_min,
                                                                   &debut_service_h, &debut_service_min,
                                                                   &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
       // Conversion en minutes
       debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL;
-      arrivee_min += arrivee_h - OFFSET_TRAVAIL;
+      arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
 
       if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
-        if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
-          nPersonnes++;
+        if (arrivee_min < i) nPersonnes++; // On ne compte que ceux qui SONT arrivées
         else break;  // Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
       }
     }  // Il y a {nPersonnes} en train d'attendre à cette minute {i}.
 
     // Réinitialisation
     fseek(fp, 0, SEEK_SET);
-  }
+  }  // Il y a Somme(nPersonnes) sur {i} durées qui ont attendus.
   fclose(fp);
-  file_moy = (double)nPersonnes / HEURE_FERMETURE; // Population/min
+  file_moy = (double)nPersonnes / MINUTE_FERMETURE; // nPersonnes/min
 
   return file_moy;
 }
 
 
 /**
- * @brief Retourne la taille moyenne de la file d'attente issu de Simulation.txt.
+ * @brief Retourne la taille maximale de la file d'attente issu de FICHIER_DATA.
  *
- * @return double Taille moyenne de la file d'attente.
+ * @return double Taille maximale de la file d'attente.
  */
 int fileMax(void) {
   int file_max = 0;  // Maximum à retourner
@@ -150,7 +149,7 @@ int fileMax(void) {
   }
 
   // Calcul {nPersonnes} max en attente pour chaque minute
-  for(int i = 0; i <= HEURE_FERMETURE; i++) {
+  for(int i = 0; i <= MINUTE_FERMETURE; i++) {
     while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
                                                                   &attente_h, &attente_min,
                                                                   &debut_service_h, &debut_service_min,
@@ -160,8 +159,7 @@ int fileMax(void) {
       arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
 
       if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
-        if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
-          nPersonnes++;
+        if (arrivee_min < i) nPersonnes++; // On ne compte que ceux qui SONT arrivées
         else break;// Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
       }
     }  // Il y a {nPersonnes} en train d'attendre à cette minute {i}.
@@ -178,7 +176,7 @@ int fileMax(void) {
 
 
 /**
- * @brief Retourne le débit moyen de la file d'attente issu de Simulation.txt.
+ * @brief Retourne le débit moyen de la file d'attente issu de FICHIER_DATA.
  *
  * @return double Débit moyen de la file d'attente.
  */
@@ -210,16 +208,16 @@ double debMoy(void) {
     nbClients++;
   fclose(fp);
 
-  return (double)nbClients / HEURE_FERMETURE;  // Débit de clients moyen
+  return (double)nbClients / MINUTE_FERMETURE;  // Débit de clients moyen
 }
 
 
 /**
- * @brief Retourne le taux de clients non traitées de la file d'attente issu de Simulation.txt.
+ * @brief Retourne le taux de clients non traitées de la file d'attente issu de FICHIER_DATA.
  *
  * @return double Taux de clients non traitées de la file d'attente.
  */
-double tauxTraite(void) {
+double tauxNonTraites(void) {
   int nbClients = 0;
   int non_traites = 0;
 
@@ -247,19 +245,19 @@ double tauxTraite(void) {
                                                                 &fin_service_h, &fin_service_min) != EOF) {
     nbClients++;
     fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL;  // Conversion en minutes
-    if(fin_service_min > HEURE_FERMETURE)  // Si il doit être traité après la fermeture
-      non_traites++;
+
+    if(fin_service_min > MINUTE_FERMETURE) non_traites++;  // Si il doit être traité après la fermeture
   }
   fclose(fp);
 
-  return 1 - (double)non_traites / nbClients;  // Taux de clients non traités
+  return (double)non_traites / nbClients;  // Taux de clients non traités
 }
 
 
 /**
- * @brief Retourne le temps de réponse moyen de la file d'attente issu de Simulation.txt.
+ * @brief Retourne le temps de réponse moyen de la file d'attente issu de FICHIER_DATA.
  *
- * @return double Temps de réponse moyen de la file.
+ * @return double Temps de réponse moyen de la file d'attente.
  */
 double tempsRep(void) {
   int nbClients = 0;
@@ -287,8 +285,10 @@ double tempsRep(void) {
                                                                 &attente_h, &attente_min,
                                                                 &debut_service_h, &debut_service_min,
                                                                 &fin_service_h, &fin_service_min) != EOF) {
+    // Conversion en minute
     arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
     fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL;
+
     nbClients++;
     temps_tot += fin_service_min - arrivee_min;
   }

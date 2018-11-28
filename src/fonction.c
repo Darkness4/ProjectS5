@@ -27,10 +27,10 @@
 
 #include "fonction.h"
 
-const int MIN = 5;
-const int MAX = 30;
-const float LAMBDA = 0.1;
-const int HEURE_ACCEPTE = 510;  // 510 minutes acceptés
+const int MIN = 5;  // duree prend un valeur entre [MIN, MAX]
+const int MAX = 10;
+const float LAMBDA = 0.1;  // Selon la loi exponentielle
+const int MINUTE_ACCEPTE = 510;  // 510 minutes acceptés
 
 /**
  * @brief Crée et ajoute un client à la liste.
@@ -40,7 +40,7 @@ const int HEURE_ACCEPTE = 510;  // 510 minutes acceptés
 int creerClient(struct ListeClients* listeclients) {
     struct Client *nouvClient = (struct Client *)malloc(sizeof(struct Client));
     double U = (double)rand()/RAND_MAX;  // U prend une valeur entre [0, 1]
-    int duree = rand() % (MAX + 1 - MIN) + MIN;  // duree prend un valeur entre [min, max]
+    int duree = rand() % (MAX + 1 - MIN) + MIN;  // duree prend un valeur entre [MIN, MAX]
     if (listeclients -> HEAD != NULL) {  // Cas : "Il existe un précédent"
         struct Client *dernierClient = listeclients -> HEAD;
 
@@ -82,7 +82,7 @@ struct ListeClients *creerListeJournaliere(void) {
     struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
     listeclients -> HEAD = NULL;
     int compteur = 0;
-    while (creerClient(listeclients) < HEURE_ACCEPTE) compteur++;  // Créer un client jusqu'à HEURE_ACCEPTE
+    while (creerClient(listeclients) < MINUTE_ACCEPTE) compteur++;  // Créer un client jusqu'à MINUTE_ACCEPTE
     printf("%i clients sont venus!\n", compteur);
     popClient(listeclients);  // Ejecte le dernier qui est > 510
     return listeclients;

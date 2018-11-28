@@ -30,13 +30,7 @@ int main(void) {
   printf("Simulation terminé.\n");
   ecrireList(listeclients);
   printf("Résultats enregistrées dans %s.\n", FICHIER_DATA);
-  int file_max = fileMax();
-  double file_moy = fileMoy();
-  double deb_moy = debMoy();
-  double taux_traitement = tauxTraite();
-  double temps_reponse_moy = tempsRep();
-  // printf("%lf,%i,%lf,%lf,%lf\n", file_moy, file_max, deb_moy, taux_traitement, temps_reponse_moy);
-  ecrireTableau(file_moy, file_max, deb_moy, taux_traitement, temps_reponse_moy);
+  ecrireTableau(fileMoy(), fileMax(), debMoy(), tauxNonTraites(), tempsRep());
   printf("Performances enregistrées dans %s.\n", FICHIER_TABLEAU);
   return 0;
 }

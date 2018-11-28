@@ -3,6 +3,6 @@
 
 const char* FICHIER_TABLEAU;
 
-void ecrireTableau(double file_moy, int file_max, double deb_moy, double taux_traitement, double temps_reponse_moy);
+void ecrireTableau(double file_moy, int file_max, double deb_moy, double taux_non_traites, double temps_reponse_moy);
 
 #endif  // _tableau_h
