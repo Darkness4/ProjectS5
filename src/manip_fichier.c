@@ -101,7 +101,7 @@ double fileMoy(void) {
     while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
                                                                   &attente_h, &attente_min,
                                                                   &debut_service_h, &debut_service_min,
-                                                  &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
+                                                                  &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
       // Conversion en minutes
       debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL;
       arrivee_min += arrivee_h - OFFSET_TRAVAIL;
