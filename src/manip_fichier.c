@@ -94,7 +94,7 @@ double fileMoy(void) {
  * @return double Taille moyenne de la file d'attente.
  */
 int fileMax(void) {
-  int file_max;  // Maximum à retourner
+  int file_max = 0;  // Maximum à retourner
   int nPersonnes = 0;
 
   // Datas
