@@ -27,9 +27,9 @@
 
 #include "fonction.h"
 
-const int MIN = 0;
-const int MAX = 60;
-const int LAMBDA = 2;
+const int MIN = 5;
+const int MAX = 30;
+const float LAMBDA = 0.1;
 
 
 /**
@@ -75,7 +75,7 @@ int creerClient(struct ListeClients* listeclients) {
 
 /**
  * @brief Créer la liste journalière.
- * 
+ *
  * @return struct ListeClients* Liste des clients.
  */
 struct ListeClients *creerListeJournaliere(void) {
