@@ -20,8 +20,7 @@
 #include "manip_fichier.h"
 
 const int HEURE_FERMETURE = 540;  // Heure de fermeture du guichet
-const int OFFSET_TRAVAIL_H = 8;  // 510 = 8h30
-const int OFFSET_TRAVAIL_MIN = 30;
+const int OFFSET_TRAVAIL = 510;
 const char* FICHIER_DATA = "Simulation.txt";
 
 
@@ -50,19 +49,19 @@ void ecrireList(struct ListeClients *listeclients) {
 
   // Tant qu'il reste des clients
   while(curseur != NULL) {
-    int arrivee_h = curseur -> arrivee;
+    int arrivee_h = curseur -> arrivee + OFFSET_TRAVAIL;
     int arrivee_min = convert_Minutes_to_Hour(&arrivee_h);
     int attente_h = curseur -> attente;
     int attente_min = convert_Minutes_to_Hour(&attente_h);
-    int debut_service_h = curseur -> arrivee + curseur -> attente;
+    int debut_service_h = curseur -> arrivee + curseur -> attente + OFFSET_TRAVAIL;
     int debut_service_min = convert_Minutes_to_Hour(&debut_service_h);
-    int fin_service_h = curseur -> fin_service;
+    int fin_service_h = curseur -> fin_service + OFFSET_TRAVAIL;
     int fin_service_min = convert_Minutes_to_Hour(&fin_service_h);
 
-    fprintf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", arrivee_h+OFFSET_TRAVAIL_H, arrivee_min+OFFSET_TRAVAIL_MIN,
+    fprintf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", arrivee_h, arrivee_min,
                                                              attente_h, attente_min,
-                                                             debut_service_h+OFFSET_TRAVAIL_H, debut_service_min+OFFSET_TRAVAIL_MIN,
-                                                             fin_service_h+OFFSET_TRAVAIL_H, fin_service_min+OFFSET_TRAVAIL_MIN);
+                                                             debut_service_h, debut_service_min,
+                                                             fin_service_h, fin_service_min);
     curseur = curseur -> suivant;
   }
 
@@ -104,8 +103,8 @@ double fileMoy(void) {
                                                                   &debut_service_h, &debut_service_min,
                                                   &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
       // Conversion en minutes
-      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
-      arrivee_min += arrivee_h - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL;
+      arrivee_min += arrivee_h - OFFSET_TRAVAIL;
 
       if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
         if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
@@ -157,8 +156,8 @@ int fileMax(void) {
                                                                   &debut_service_h, &debut_service_min,
                                                                   &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
       // Conversion en minutes
-      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
-      arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL;
+      arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
 
       if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
         if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
@@ -247,7 +246,7 @@ double tauxTraite(void) {
                                                                 &debut_service_h, &debut_service_min,
                                                                 &fin_service_h, &fin_service_min) != EOF) {
     nbClients++;
-    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;  // Conversion en minutes
+    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL;  // Conversion en minutes
     if(fin_service_min > HEURE_FERMETURE)  // Si il doit être traité après la fermeture
       non_traites++;
   }
@@ -288,8 +287,8 @@ double tempsRep(void) {
                                                                 &attente_h, &attente_min,
                                                                 &debut_service_h, &debut_service_min,
                                                                 &fin_service_h, &fin_service_min) != EOF) {
-    arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
-    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+    arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL;
+    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL;
     nbClients++;
     temps_tot += fin_service_min - arrivee_min;
   }
