@@ -13,8 +13,11 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "fonction.h"
 #include "manip_fichier.h"
+
+const int DUREE = 540;  // Durée de travail
 
 
 /**
@@ -25,21 +28,17 @@
 void ecrireList(struct ListeClients *listeclients) {
   FILE *fp;
   struct Client *curseur;
-  //variables à écrire dans le fichier
-  int arr;
-  int att;
-  int fin_serv;
-  int deb_serv;
-  //initialisation
+  // Initialisation
   fp = fopen("simulation.txt", "w");
   curseur = listeclients-> HEAD;
-  while(curseur != NULL) {   //tant qu'il reste des clients
-    //calcul et écriture des valeurs
-    arr = curseur -> arrivee;
-    att = curseur -> attente;
-    deb_serv = arr + att;
-    fin_serv = curseur -> fin_service;
-    fprintf(fp, "%d %d %d %d\n", arr, att, deb_serv, fin_serv);
+  while(curseur != NULL) {   // Tant qu'il reste des clients
+    // Calcul et écriture des valeurs
+    int deb_serv = curseur -> arrivee + curseur -> attente;
+
+    fprintf(fp, "%d %d %d %d\n", curseur -> arrivee, 
+                                 curseur -> attente, 
+                                 deb_serv, 
+                                 curseur -> fin_service);
     curseur = curseur -> suivant;
   }
   fclose(fp);
@@ -48,91 +47,95 @@ void ecrireList(struct ListeClients *listeclients) {
 
 double fileMoy(void) {
   FILE *fp;
-  double moy;
-  int somme=0;
+  double file_moy;
+  int somme = 0;
   int i;
-  //variables servant à lire les valeurs
+  // Variables servant à lire les valeurs
   int arr;
   int att;
   int fin_serv;
   int deb_serv;
-  bool end=false;   //indique si les clients suivants ne sont pas encore entrés dans la file
-  //vérification de l'ouverture du fichier
+  bool is_end = false;  // Indique si les clients suivants ne sont pas encore entrés dans la file
+  // Vérification de l'ouverture du fichier
   fp = fopen("simulation.txt", "r");
-  if(fp == NULL)
-    return -1;
-  for(i =0 ;i <= 540;i ++) {   //calcul pour chaque minute
-    while(!end && fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   //tant qu'il reste des clients à compter dans la file
-      if(deb_serv > i) {   //on ne regarde que ceux qui n'ont pas été servis
-      if(arr < i)   //on ne regarde que ceux qui sont arrivés
-        somme ++;
-      else
-        end = true;
-      }
-    }
-    //réinitiaisation
-    end = false;
-    fseek(fp,0,SEEK_SET);
+  if(fp == NULL) {
+    printf("Fichier introuvable\n");
+    exit(1);
   }
-  moy = somme / 540.0;
+
+  for(i = 0; i <= DUREE; i ++) {  // Calcul pour chaque minute
+    while(!is_end && fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   // Tant qu'il reste des clients à compter dans la file
+      if(deb_serv > i)  // On ne regarde que ceux qui n'ont pas été servis
+        (arr < i) ? somme++ : (is_end = true);
+    }
+    // Réinitiaisation
+    is_end = false;
+    fseek(fp, 0, SEEK_SET);
+  }
+  file_moy = (double)somme / DUREE;
   fclose(fp);
-  return moy;
+  return file_moy;
 }
 
 
 int fileMax(void) {
   FILE *fp;
-  int somme=0;
-  int max=0;
+  int somme = 0;
+  int file_max = 0;
   int i;
-  //variables servant à lire les valeurs
+  // Variables servant à lire les valeurs
   int arr;
   int att;
   int fin_serv;
   int deb_serv;
-  bool end=false;   //indique si les clients suivants ne sont pas encore entrés dans la file
-  //vérification de l'ouverture du fichier
+  bool is_end = false;   // Indique si les clients suivants ne sont pas encore entrés dans la file
+  // Vérification de l'ouverture du fichier
   fp = fopen("simulation.txt", "r");
-  if(fp == NULL)
-    return 0;
-  for(i =0 ;i <= 540;i ++) {   //calcul pour chaque minute
-    while(!end && fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   //tant qu'il reste des clients à compter dans la file
-      if(deb_serv > i) {   //on ne regarde que ceux qui n'ont pas été servis
-        if(arr < i)   //on ne regarde que ceux qui sont arrivés
+  if(fp == NULL) {
+    printf("Fichier introuvable\n");
+    exit(1);
+  }
+  for(i = 0; i <= DUREE; i ++) {   // Calcul pour chaque minute
+    while(!is_end && fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   // Tant qu'il reste des clients à compter dans la file
+      if(deb_serv > i) {   // On ne regarde que ceux qui n'ont pas été servis
+        if(arr < i)   // On ne regarde que ceux qui sont arrivés
           somme ++;
         else
-          end = true;
+          is_end = true;
       }
     }
     //réinitiaisation
-    end = false;
-    fseek(fp,0,SEEK_SET);
-    if(somme > max)
-      max = somme;
+    is_end = false;
+    fseek(fp, 0, SEEK_SET);
+    if(somme > file_max)
+      file_max = somme;
     somme = 0;
   }
   fclose(fp);
-  return max;
+  return file_max;
 }
 
 
 double debMoy(void) {
   FILE *fp;
   int nbClients = 0;
-  double deb;
-  //variables servant à lire les valeurs
+  double deb_moy;
+  // Variables servant à lire les valeurs
   int arr;
   int att;
   int fin_serv;
   int deb_serv;
-  //vérification de l'ouverture du fichier
+  // Vérification de l'ouverture du fichier
   fp = fopen("simulation.txt", "r");
-  if(fp == NULL)
-    return -1;
-  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4)   //tant qu'il y a des clients
+  if(fp == NULL) {
+    printf("Fichier introuvable\n");
+    exit(1);
+  }
+  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4)   // Tant qu'il y a des clients
     nbClients ++;
-  deb = (double)nbClients / 540;
-  return deb;
+  fclose(fp);
+  deb_moy = (double)nbClients / DUREE;
+  return deb_moy;
 }
 
 
@@ -140,24 +143,25 @@ double tauxTraite(void) {
   FILE *fp;
   int nbClients = 0;
   int non_traites = 0;
-  float nb;
   double taux;
-  //variables servant à lire les valeurs
+  // Variables servant à lire les valeurs
   int arr;
   int att;
   int fin_serv;
   int deb_serv;
-  //vérification de l'ouverture du fichier
+  // Vérification de l'ouverture du fichier
   fp = fopen("simulation.txt", "r");
-  if(fp == NULL)
-    return -1;
-  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   //tant qu'il y a des clients
+  if(fp == NULL) {
+    printf("Fichier introuvable\n");
+    exit(1);
+  }
+  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   // Tant qu'il y a des clients
     nbClients ++;
-    if(fin_serv > 540)   //si il doit être traité après la fermeture
+    if(fin_serv > 540)   // Si il doit être traité après la fermeture
       non_traites ++;
   }
-  nb = nbClients;   //on passe l'entier en double pour que la division ne soit pas euclidienne
-  taux = 1 - non_traites / nb;
+  fclose(fp);
+  taux = 1 - non_traites / (double)nbClients;
   return taux;
 }
 
@@ -167,21 +171,24 @@ double tempsRep(void) {
   int nbClients = 0;
   int temps_tot = 0;
   double temps;
-  double reponse;
-  //variables servant à lire les valeurs
+  double temps_reponse_moy;
+  // Variables servant à lire les valeurs
   int arr;
   int att;
   int fin_serv;
   int deb_serv;
-  //vérification de l'ouverture du fichier
+  // Vérification de l'ouverture du fichier
   fp = fopen("simulation.txt", "r");
-  if(fp == NULL)
-    return -1;
-  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   //tant qu'il y a des clients
+  if(fp == NULL) {
+    printf("Fichier introuvable\n");
+    exit(1);
+  }
+  while(fscanf(fp, "%d %d %d %d\n", &arr, &att, &deb_serv, &fin_serv) == 4) {   // Tant qu'il y a des clients
     nbClients ++;
     temps_tot = temps_tot + (fin_serv - arr);
   }
-  temps = temps_tot;   //on passe l'entier en double pour que la division ne soit pas euclidienne
-  reponse = temps / nbClients;
-  return reponse;
+  fclose(fp);
+  temps = temps_tot;   // On passe l'entier en double pour que la division ne soit pas euclidienne
+  temps_reponse_moy = temps / nbClients;
+  return temps_reponse_moy;
 }

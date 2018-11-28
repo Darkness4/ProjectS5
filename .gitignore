@@ -59,3 +59,4 @@ xml/
 .vs/
 obj/
 bin/
+*.txt
