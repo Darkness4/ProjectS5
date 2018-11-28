@@ -30,7 +30,7 @@
 const int MIN = 5;
 const int MAX = 30;
 const float LAMBDA = 0.1;
-
+const int HEURE_ACCEPTE = 510;
 
 /**
  * @brief Crée et ajoute un client à la liste.
@@ -44,13 +44,12 @@ int creerClient(struct ListeClients* listeclients) {
     if (listeclients -> HEAD != NULL) {  // Cas : "Il existe un précédent"
         struct Client *dernierClient = listeclients -> HEAD;
 
-        // Déplacement du curseur vers le derner
+        // Déplacement du curseur vers le dernier
         while (dernierClient -> suivant != NULL)
             dernierClient = dernierClient -> suivant;
 
         // Ajout de données
         nouvClient -> arrivee = dernierClient -> arrivee - (int)(log(1-U)/LAMBDA);
-        // Vérification d'une attente du client
         if(dernierClient -> fin_service < nouvClient -> arrivee) {  // Cas : "Il n'attend pas"
             nouvClient -> attente = 0;
             nouvClient -> fin_service = nouvClient -> arrivee + duree;
@@ -63,8 +62,9 @@ int creerClient(struct ListeClients* listeclients) {
         nouvClient -> suivant = NULL;
         nouvClient -> precedent = dernierClient;
         dernierClient -> suivant = nouvClient;
-    } else {
+    } else {  // Cas : "Il n'existe pas un précédent"
         nouvClient -> arrivee = (int)(-log(1-U)/LAMBDA);
+        nouvClient -> attente = 0;
         nouvClient -> fin_service = nouvClient -> arrivee + duree;
         nouvClient -> suivant = NULL;
         listeclients -> HEAD = nouvClient;
@@ -81,7 +81,7 @@ int creerClient(struct ListeClients* listeclients) {
 struct ListeClients *creerListeJournaliere(void) {
     struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
     listeclients -> HEAD = NULL;
-    while (creerClient(listeclients) < 510);  // Créer un client jusqu'à 510 min
+    while (creerClient(listeclients) < HEURE_ACCEPTE);  // Créer un client jusqu'à 510 min
     popClient(listeclients);  // Ejecte le dernier qui est > 510
     return listeclients;
 }
