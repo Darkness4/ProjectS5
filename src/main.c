@@ -19,6 +19,8 @@
 #include "fonction.h"
 #include "manip_fichier.h"
 #include "tableau.h"
+extern const char* FICHIER_DATA;
+extern const char* FICHIER_TABLEAU;
 
 
 int main(void) {
@@ -27,7 +29,7 @@ int main(void) {
   struct ListeClients *listeclients = creerListeJournaliere();
   printf("Simulation terminé.\n");
   ecrireList(listeclients);
-  printf("Résultats enregistrées dans simulation.txt.\n");
+  printf("Résultats enregistrées dans %s.\n", FICHIER_DATA);
   int file_max = fileMax();
   double file_moy = fileMoy();
   double deb_moy = debMoy();
@@ -35,6 +37,6 @@ int main(void) {
   double temps_reponse_moy = tempsRep();
   // printf("%lf,%i,%lf,%lf,%lf\n", file_moy, file_max, deb_moy, taux_traitement, temps_reponse_moy);
   ecrireTableau(file_moy, file_max, deb_moy, taux_traitement, temps_reponse_moy);
-  printf("Performances enregistrées dans 'Tableau de Bord.txt'.\n");
+  printf("Performances enregistrées dans %s.\n", FICHIER_TABLEAU);
   return 0;
 }

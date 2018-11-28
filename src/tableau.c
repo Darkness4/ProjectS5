@@ -13,9 +13,11 @@
 #include "tableau.h"
 #include <stdio.h>
 
+const char* FICHIER_TABLEAU = "Tableau de Bord.txt";
+
 
 void ecrireTableau(double file_moy, int file_max, double deb_moy, double taux_traitement, double temps_reponse_moy) {
-    FILE *ftableau = fopen("Tableau de Bord.txt", "w");
+    FILE *ftableau = fopen(FICHIER_TABLEAU, "w");
     fprintf(ftableau, "---Performance---\n");
     fprintf(ftableau, "Taille moyenne des files d'attente : %lf\n", file_moy);
     fprintf(ftableau, "Taille maximum des files d’attente : %i\n", file_max);

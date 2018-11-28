@@ -19,7 +19,23 @@
 #include "fonction.h"
 #include "manip_fichier.h"
 
-const int HEURE_FERMETURE = 540;  // Heure de fermeture
+const int HEURE_FERMETURE = 540;  // Heure de fermeture du guichet
+const int OFFSET_TRAVAIL_H = 8;  // 510 = 8h30
+const int OFFSET_TRAVAIL_MIN = 30;
+const char* FICHIER_DATA = "Simulation.txt";
+
+
+/**
+ * @brief Convertit les Minutes en Heure et retourne le reste.
+ * 
+ * @param minutes_to_hour Minutes convertit en Heure.
+ * @return int Minutes restantes.
+ */
+int convert_Minutes_to_Hour(int *minutes_to_hour) {
+  int minutes = *minutes_to_hour%60;
+  *minutes_to_hour /= 60;
+  return minutes;
+}
 
 
 /**
@@ -29,16 +45,24 @@ const int HEURE_FERMETURE = 540;  // Heure de fermeture
  */
 void ecrireList(struct ListeClients *listeclients) {
   struct Client *curseur;
-  FILE *fp = fopen("simulation.txt", "w");
+  FILE *fp = fopen(FICHIER_DATA, "w");
   curseur = listeclients -> HEAD;
 
   // Tant qu'il reste des clients
   while(curseur != NULL) {
-    int debut_serv = curseur -> arrivee + curseur -> attente;
-    fprintf(fp, "%d %d %d %d\n", curseur -> arrivee,
-                                 curseur -> attente,
-                                 debut_serv,
-                                 curseur -> fin_service);
+    int arrivee_h = curseur -> arrivee;
+    int arrivee_min = convert_Minutes_to_Hour(&arrivee_h);
+    int attente_h = curseur -> attente;
+    int attente_min = convert_Minutes_to_Hour(&attente_h);
+    int debut_service_h = curseur -> arrivee + curseur -> attente;
+    int debut_service_min = convert_Minutes_to_Hour(&debut_service_h);
+    int fin_service_h = curseur -> fin_service;
+    int fin_service_min = convert_Minutes_to_Hour(&fin_service_h);
+
+    fprintf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", arrivee_h+OFFSET_TRAVAIL_H, arrivee_min+OFFSET_TRAVAIL_MIN,
+                                                             attente_h, attente_min,
+                                                             debut_service_h+OFFSET_TRAVAIL_H, debut_service_min+OFFSET_TRAVAIL_MIN,
+                                                             fin_service_h+OFFSET_TRAVAIL_H, fin_service_min+OFFSET_TRAVAIL_MIN);
     curseur = curseur -> suivant;
   }
 
@@ -47,7 +71,7 @@ void ecrireList(struct ListeClients *listeclients) {
 
 
 /**
- * @brief Retourne la taille moyenne de la file issu de simulation.txt.
+ * @brief Retourne la taille moyenne de la file issu de Simulation.txt.
  *
  * @return double Taille moyenne de la file.
  */
@@ -56,13 +80,18 @@ double fileMoy(void) {
   int nPersonnes = 0;
 
   // Datas
-  int arrivee;
-  int attente;
-  int debut_serv;
-  int fin_serv;
+  int arrivee_h;
+  int arrivee_min;
+  int attente_h;
+  int attente_min;
+  int debut_service_h;
+  int debut_service_min;
+  int fin_service_h;
+  int fin_service_min;
+
 
   // Vérification de l'ouverture du fichier
-  FILE *fp = fopen("simulation.txt", "r");
+  FILE *fp = fopen(FICHIER_DATA, "r");
   if(fp == NULL) {
     printf("Fichier introuvable\n");
     exit(1);
@@ -70,9 +99,16 @@ double fileMoy(void) {
 
   // Calcul {nPersonnes} en attente pour chaque minute
   for(int i = 0; i <= HEURE_FERMETURE; i++) {
-    while(fscanf(fp, "%d %d %d %d\n", &arrivee, &attente, &debut_serv, &fin_serv) == 4) {   // Tant qu'il reste des clients à compter dans la file
-      if(debut_serv > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
-        if (arrivee < i)  // On ne compte que ceux qui SONT arrivées
+    while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
+                                                                  &attente_h, &attente_min,
+                                                                  &debut_service_h, &debut_service_min,
+                                                  &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
+      // Conversion en minutes
+      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+      arrivee_min += arrivee_h - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+
+      if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
+        if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
           nPersonnes++;
         else break;  // Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
       }
@@ -89,7 +125,7 @@ double fileMoy(void) {
 
 
 /**
- * @brief Retourne la taille moyenne de la file d'attente issu de simulation.txt.
+ * @brief Retourne la taille moyenne de la file d'attente issu de Simulation.txt.
  *
  * @return double Taille moyenne de la file d'attente.
  */
@@ -98,13 +134,17 @@ int fileMax(void) {
   int nPersonnes = 0;
 
   // Datas
-  int arrivee;
-  int attente;
-  int debut_serv;
-  int fin_serv;
+  int arrivee_h;
+  int arrivee_min;
+  int attente_h;
+  int attente_min;
+  int debut_service_h;
+  int debut_service_min;
+  int fin_service_h;
+  int fin_service_min;
 
   // Vérification de l'ouverture du fichier
-  FILE *fp = fopen("simulation.txt", "r");
+  FILE *fp = fopen(FICHIER_DATA, "r");
   if(fp == NULL) {
     printf("Fichier introuvable\n");
     exit(1);
@@ -112,9 +152,16 @@ int fileMax(void) {
 
   // Calcul {nPersonnes} max en attente pour chaque minute
   for(int i = 0; i <= HEURE_FERMETURE; i++) {
-    while(fscanf(fp, "%d %d %d %d\n", &arrivee, &attente, &debut_serv, &fin_serv) == 4) {  // Tant qu'il reste des clients à compter dans la file
-      if(debut_serv > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
-        if (arrivee < i)  // On ne compte que ceux qui SONT arrivées
+    while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
+                                                                  &attente_h, &attente_min,
+                                                                  &debut_service_h, &debut_service_min,
+                                                                  &fin_service_h, &fin_service_min) != EOF) {   // Tant qu'il reste des clients à compter dans la file
+      // Conversion en minutes
+      debut_service_min += debut_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+      arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+
+      if(debut_service_min > i) {  // On ne regarde que ceux qui N'ONT PAS été servis
+        if (arrivee_min < i)  // On ne compte que ceux qui SONT arrivées
           nPersonnes++;
         else break;// Ces arrivants ne sont pas encore arrivées. Note: la liste est classé par date d'arrivée.
       }
@@ -132,7 +179,7 @@ int fileMax(void) {
 
 
 /**
- * @brief Retourne le débit moyen de la file d'attente issu de simulation.txt.
+ * @brief Retourne le débit moyen de la file d'attente issu de Simulation.txt.
  *
  * @return double Débit moyen de la file d'attente.
  */
@@ -140,20 +187,27 @@ double debMoy(void) {
   int nbClients = 0;  // Nombre de clients total
 
   // Datas
-  int arrivee;
-  int attente;
-  int debut_serv;
-  int fin_serv;
+  int arrivee_h;
+  int arrivee_min;
+  int attente_h;
+  int attente_min;
+  int debut_service_h;
+  int debut_service_min;
+  int fin_service_h;
+  int fin_service_min;
 
   // Vérification de l'ouverture du fichier
-  FILE *fp = fopen("simulation.txt", "r");
+  FILE *fp = fopen(FICHIER_DATA, "r");
   if(fp == NULL) {
     printf("Fichier introuvable\n");
     exit(1);
   }
 
   // Calcul {nbClients} total
-  while(fscanf(fp, "%d %d %d %d\n", &arrivee, &attente, &debut_serv, &fin_serv) == 4)
+  while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
+                                                                &attente_h, &attente_min,
+                                                                &debut_service_h, &debut_service_min,
+                                                                &fin_service_h, &fin_service_min) != EOF)
     nbClients++;
   fclose(fp);
 
@@ -162,7 +216,7 @@ double debMoy(void) {
 
 
 /**
- * @brief Retourne le taux de clients non traitées de la file d'attente issu de simulation.txt.
+ * @brief Retourne le taux de clients non traitées de la file d'attente issu de Simulation.txt.
  *
  * @return double Taux de clients non traitées de la file d'attente.
  */
@@ -171,22 +225,30 @@ double tauxTraite(void) {
   int non_traites = 0;
 
   // Datas
-  int arrivee;
-  int attente;
-  int debut_serv;
-  int fin_serv;
+  int arrivee_h;
+  int arrivee_min;
+  int attente_h;
+  int attente_min;
+  int debut_service_h;
+  int debut_service_min;
+  int fin_service_h;
+  int fin_service_min;
 
   // Vérification de l'ouverture du fichier
-  FILE *fp = fopen("simulation.txt", "r");
+  FILE *fp = fopen(FICHIER_DATA, "r");
   if(fp == NULL) {
     printf("Fichier introuvable\n");
     exit(1);
   }
 
   // Calcul {non_traites}
-  while(fscanf(fp, "%d %d %d %d\n", &arrivee, &attente, &debut_serv, &fin_serv) == 4) {
+  while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
+                                                                &attente_h, &attente_min,
+                                                                &debut_service_h, &debut_service_min,
+                                                                &fin_service_h, &fin_service_min) != EOF) {
     nbClients++;
-    if(fin_serv > HEURE_FERMETURE)   // Si il doit être traité après la fermeture
+    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;  // Conversion en minutes
+    if(fin_service_min > HEURE_FERMETURE)  // Si il doit être traité après la fermeture
       non_traites++;
   }
   fclose(fp);
@@ -196,7 +258,7 @@ double tauxTraite(void) {
 
 
 /**
- * @brief Retourne le temps de réponse moyen de la file d'attente issu de simulation.txt.
+ * @brief Retourne le temps de réponse moyen de la file d'attente issu de Simulation.txt.
  *
  * @return double Temps de réponse moyen de la file.
  */
@@ -205,22 +267,31 @@ double tempsRep(void) {
   int temps_tot = 0;
 
   // Datas
-  int arrivee;
-  int attente;
-  int debut_serv;
-  int fin_serv;
+  int arrivee_h;
+  int arrivee_min;
+  int attente_h;
+  int attente_min;
+  int debut_service_h;
+  int debut_service_min;
+  int fin_service_h;
+  int fin_service_min;
 
   // Vérification de l'ouverture du fichier
-  FILE *fp = fopen("simulation.txt", "r");
+  FILE *fp = fopen(FICHIER_DATA, "r");
   if(fp == NULL) {
     printf("Fichier introuvable\n");
     exit(1);
   }
 
   // Calcul {temps_tot}
-  while(fscanf(fp, "%d %d %d %d\n", &arrivee, &attente, &debut_serv, &fin_serv) == 4) {
+  while(fscanf(fp, "%02d:%02d %02d:%02d %02d:%02d %02d:%02d\n", &arrivee_h, &arrivee_min,
+                                                                &attente_h, &attente_min,
+                                                                &debut_service_h, &debut_service_min,
+                                                                &fin_service_h, &fin_service_min) != EOF) {
+    arrivee_min += arrivee_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
+    fin_service_min += fin_service_h*60 - OFFSET_TRAVAIL_H*60 - OFFSET_TRAVAIL_MIN;
     nbClients++;
-    temps_tot += fin_serv - arrivee;
+    temps_tot += fin_service_min - arrivee_min;
   }
   fclose(fp);
 

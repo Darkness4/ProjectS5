@@ -14,7 +14,7 @@
  *
  * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire (de type int) compris entre 0 et RAND_MAX.
  *
- * Le guichet travaille au 510 minutes.
+ * Le guichet travaille pendant 540 minutes. Ferme l'accès à 510 minutes. Offset 510 minutes;
  *
  * @author Marc NGUYEN
  * @author Mathieu POIGNANT
@@ -30,7 +30,7 @@
 const int MIN = 5;
 const int MAX = 30;
 const float LAMBDA = 0.1;
-const int HEURE_ACCEPTE = 510;
+const int HEURE_ACCEPTE = 510;  // 510 minutes acceptés
 
 /**
  * @brief Crée et ajoute un client à la liste.
@@ -81,7 +81,9 @@ int creerClient(struct ListeClients* listeclients) {
 struct ListeClients *creerListeJournaliere(void) {
     struct ListeClients *listeclients = (struct ListeClients *)malloc(sizeof(struct ListeClients));
     listeclients -> HEAD = NULL;
-    while (creerClient(listeclients) < HEURE_ACCEPTE);  // Créer un client jusqu'à 510 min
+    int compteur = 0;
+    while (creerClient(listeclients) < HEURE_ACCEPTE) compteur++;  // Créer un client jusqu'à HEURE_ACCEPTE
+    printf("%i clients sont venus!\n", compteur);
     popClient(listeclients);  // Ejecte le dernier qui est > 510
     return listeclients;
 }

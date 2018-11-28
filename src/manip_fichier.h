@@ -1,7 +1,9 @@
 #ifndef _manip_fichier_h
 #define _manip_fichier_h
-// Prototypes
-// ----------
+
+const char* FICHIER_DATA;
+
+int convert_Minutes_to_Hour(int *minutes_to_hour);
 void ecrireList(struct ListeClients *tete);
 double fileMoy(void);
 int fileMax(void);
