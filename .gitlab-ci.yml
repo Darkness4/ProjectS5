@@ -32,10 +32,11 @@ build-windows:
 pages:
   script: 
   - apt update && apt install -y doxygen graphviz
-  - doxygen doc/Doxyfile
-  - mv doc/webdoc/html/ public/
+  - cd doc
+  - doxygen Doxyfile
+  - mv webdoc/html/ ../public/
   artifacts:
     paths:
-    - public
+    - ../public
   only:
   - master
