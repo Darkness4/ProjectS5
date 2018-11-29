@@ -34,9 +34,9 @@ pages:
   - apt update && apt install -y doxygen graphviz
   - cd doc
   - doxygen Doxyfile
-  - mv webdoc/html/ ../public/
+  - mv webdoc/html/ public/
   artifacts:
     paths:
-    - ../public
+    - public
   only:
   - master
