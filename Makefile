@@ -1,5 +1,5 @@
 # Project Name
-TARGET ?= projetS5
+TARGET ?= $(shell basename $(CURDIR))
 
 # Compiler
 CC ?= gcc
@@ -7,35 +7,39 @@ CFLAGS ?= -Wall -Wextra -lm -I .
 
 # Linker
 LINKER ?= $(CC)
-LFLAGS ?= -Wall -I . -lm
+LFLAGS ?= -Wall -Wextra -lm -I .
 
 # Project structure
 SRCDIR ?= src
 OBJDIR ?= obj
 BINDIR ?= bin
-TESTDIR ?= test
-
-# Get all files based on project structure
-SOURCES := $(wildcard $(SRCDIR)/*.c)
-INCLUDES := $(wildcard $(SRCDIR)/*.h)
-OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 # Cleaner
-rm = rm -f
+rm = rm -rf
 
-# Link
-$(BINDIR)/$(TARGET): $(OBJECTS)
+$(BINDIR)/$(TARGET): $(OBJDIR)/main.o $(OBJDIR)/fonction.o $(OBJDIR)/manip_fichier.o $(OBJDIR)/tableau.o
 	@mkdir -p $(BINDIR)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-	@echo "$(LINKER) $(OBJECTS) $(LFLAGS) -o $@"
+	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
-
-# Compile
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
+$(OBJDIR)/main.o: $(SRCDIR)/main.c $(SRCDIR)/fonction.h
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "$(CC) $(CFLAGS) -c $< -o $@"
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
+
+$(OBJDIR)/fonction.o: $(SRCDIR)/fonction.c $(SRCDIR)/fonction.h
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
+
+$(OBJDIR)/manip_fichier.o: $(SRCDIR)/manip_fichier.c $(SRCDIR)/manip_fichier.h $(SRCDIR)/fonction.h
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
+
+$(OBJDIR)/tableau.o: $(SRCDIR)/tableau.c $(SRCDIR)/tableau.h
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
 .PHONY: clean
@@ -45,5 +49,5 @@ clean:
 
 .PHONY: remove
 remove: clean
-	@$(rm) $(BINDIR)/$(TARGET)
+	@$(rm) $(BINDIR)
 	@echo "Executable removed!"

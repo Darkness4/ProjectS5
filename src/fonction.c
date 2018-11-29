@@ -13,7 +13,7 @@
  *
  * Le principe suivant permet de générer des réalisations d’une variable
  * aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
- * X = −ln(1 − U )/λ.
+ * X = −ln(1 − U)/λ.
  *
  * Pour information, la fonction rand() retourne un nombre pseudo-aléatoire 
  * (de type int) compris entre 0 et RAND_MAX.
