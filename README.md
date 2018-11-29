@@ -14,18 +14,17 @@
 >
 > > 1. Proposer et définir les structures de données nécessaires pour la simulation du fonctionnement du guichet. Justifier votre choix
 > >
-> > 2. Simuler le fonctionnement : (i) créer la liste journalière de clients ; (ii) initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients. Les dates sont des entiers indiquant des minutes.
+> > 2. Simuler le fonctionnement :  créer la liste journalière de clients ; (ii) initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients. Les dates sont des entiers indiquant des minutes.
 > >
 > >    Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si $`U ∼ [0, 1]`$, alors $`X = −ln(1 − U )/λ`$
-> >
 > >
 > > 3. Créer et enregistrer dans un fichier la liste journalières des clients et les informations relatives à leur service (date d’arrivée, durée d’attente, date du début de service, date de fin de service, etc.).
 > >
 > > 4. En se basant sur la liste journalière des clients détaillée dans un fichier, mesurer les métriques de performance suivantes :
-> > - taille moyenne des files d’attente ;
-> > - taille maximum des files d’attente ;
-> > - débit moyen (nombre moyen de clients par unité de temps) ;
-> > - taux de clients non servis ;
-> > - temps de réponse moyen (temps de traitement moyen des clients). Le temps de réponse pour un client est la différence entre sa date d’arrivée et sa date de fin de service.
+> >    - taille moyenne des files d’attente ;
+> >    - taille maximum des files d’attente ;
+> >    - débit moyen (nombre moyen de clients par unité de temps) ;
+> >    - taux de clients non servis ;
+> >    - temps de réponse moyen (temps de traitement moyen des clients). Le temps de réponse pour un client est la différence entre sa date d’arrivée et sa date de fin de service.
 > >
 > > 5. Imaginer et proposer un tableau de bord bien présenté dans un fichier qui recense les différentes métriques de performance du fonctionnement journalier du guichet.
