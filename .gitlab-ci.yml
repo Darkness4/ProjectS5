@@ -22,3 +22,14 @@ build-windows:
     paths:
       - bin/projetS5.exe
     expire_in: 1 week
+
+pages:
+  script: 
+  - apt update && apt doxygen graphviz
+  - doxygen doc/Doxyfile
+  - mv doc/webdoc/html/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
