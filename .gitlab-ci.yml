@@ -37,6 +37,6 @@ pages:
   - mv webdoc/html/ public/
   artifacts:
     paths:
-    - public
+    - doc/public
   only:
   - master
