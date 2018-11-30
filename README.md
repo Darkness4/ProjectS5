@@ -3,17 +3,18 @@
 - [ProjetS5](#projets5)
     - [Projet : Étude et simulation d’une file d’attente](#projet--Étude-et-simulation-dune-file-dattente)
     - [Build](#build)
-        - [From Linux](#from-linux)
+        - [Depuis Linux](#depuis-linux)
             - [Target Linux](#target-linux)
             - [Target Windows](#target-windows)
-        - [From Windows](#from-windows)
-            - [Build for Linux](#build-for-linux)
-            - [Build for Windows](#build-for-windows)
+        - [Depuis Windows](#depuis-windows)
+            - [Target Linux](#target-linux-1)
+            - [Target Windows](#target-windows-1)
                 - [MSYS2 MinGW64](#msys2-mingw64)
     - [Usage](#usage)
         - [Linux](#linux)
         - [Windows](#windows)
     - [Paramétrage](#paramétrage)
+    - [Description rapide du processus de simulation](#description-rapide-du-processus-de-simulation)
     - [Documentation](#documentation)
 
 ## Projet : Étude et simulation d’une file d’attente
@@ -32,7 +33,7 @@
 > >
 > > 2. Simuler le fonctionnement :  créer la liste journalière de clients ; (ii) initialiser la date d’arrivée, la durée d’attente et la date de la fin de service de chacun des clients. Les dates sont des entiers indiquant des minutes.
 > >
-> >    Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si $`U ∼ [0, 1]`$, alors $`X = −ln(1 − U )/λ`$
+> >    Le principe suivant permet de générer des réalisations d’une variable aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors X = −ln(1 − U)/λ.
 > >
 > > 3. Créer et enregistrer dans un fichier la liste journalières des clients et les informations relatives à leur service (date d’arrivée, durée d’attente, date du début de service, date de fin de service, etc.).
 > >
@@ -47,7 +48,7 @@
 
 ## Build
 
-### From Linux
+### Depuis Linux
 
 #### Target Linux
 
@@ -73,9 +74,9 @@ cd projects5
 make CC=/usr/bin/x86_64-w64-mingw32-gcc TARGET=projects5.exe
 ```
 
-### From Windows
+### Depuis Windows
 
-#### Build for Linux
+#### Target Linux
 
 Plusieurs choix s'offre à vous : Cygwin, WSL, VM...
 Note : Ne prenez pas MSYS2, qui cible Windows.
@@ -84,7 +85,7 @@ Vous pouvez suivre les instructions de [From Linux Target Linux](#target-linux).
 
 Vérifiez seulement votre package manager : (pacman, apt, apk...).
 
-#### Build for Windows
+#### Target Windows
 
 Plusieurs choix s'offre à vous : Cygwin, MSYS2, WSL, VM...
 Important : Notez que votre VM/sous-système Linux doivent être compatible MinGW (sinon compilez le vous même).
@@ -119,13 +120,32 @@ make
 
 Ou lancer simplement le .exe.
 
-Un fichier listant les clients du jour va être généré.
+Un fichier listant les clients du jour va être généré (par défaut : Simulation.txt).
 
-Un tableau de bord permettra de voir les statistiques intéressantes.
+Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
+
+| Arrivee | Attente | Début du service | Fin du service |
+|:-------:|:-------:|:----------------:|:--------------:|
+|  HH:MM  |  HH:MM  |       HH:MM      |      HH:MM     |
+|   ...   |   ...   |        ...       |       ...      |
+
+Un tableau de bord permettra de voir les statistiques intéressantes (par défaut : Tableau de Bord.txt).
+
+Le tableau de bord est de la forme :
+
+```txt
+---Performance---
+Taille moyenne des files d'attente : ?.??????
+Taille maximum des files d’attente : ?
+Débit moyen (nombre moyen de clients par unité de temps) : ?.??????
+Taux de clients non servis : ?.??????
+Temps de réponse moyen : ??.??????
+```
 
 ## Paramétrage
 
 D'après l'énoncé, on peut jouer sur ces constantes :
+
 ```C
 // fonction.c
 
@@ -139,7 +159,7 @@ const int MIN = 1;
 const int MAX = 20;
 /**
  * @brief Constante de la loi exponentielle.
- * 
+ *
  * L'arrivée d'un client suit la loi exponentielle.
  * Le principe suivant permet de générer des réalisations d’une variable
  * aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
@@ -177,6 +197,15 @@ const char* FICHIER_DATA = "Simulation.txt";
  */
 const char* FICHIER_TABLEAU = "Tableau de Bord.txt";
 ```
+
+## Description rapide du processus de simulation
+
+1. Génération d'une liste chaînée.
+2. Exporter les données en txt : Arrivee, Attente, Début du service, Fin du service.
+3. Utiliser les données exportées pour calculer les métriques de performances.
+4. Exporter le tableau de bord en txt.
+
+Pour plus d'information, il est conseillé d'aller voir la documentation [Doxygen](#documentation) (ou directement dans le code).
 
 ## Documentation
 
