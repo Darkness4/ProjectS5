@@ -36,11 +36,11 @@
 /**
  * @brief duree prend un valeur entre [MIN, MAX] suivant la loi uniforme.
  */
-const int MIN = 5;
+const int MIN = 1;
 /**
  * @brief duree prend un valeur entre [MIN, MAX] suivant la loi uniforme.
  */
-const int MAX = 10;
+const int MAX = 20;
 /**
  * @brief Constante de la loi exponentielle.
  * 
