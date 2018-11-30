@@ -14,10 +14,9 @@ build-linux:
   script: 
   - apt install -y make gcc
   - make
-  - mv bin/projets5 ./
   artifacts:
     paths:
-      - projets5
+      - bin
     expire_in: 1 week
 
 build-windows:
@@ -25,10 +24,9 @@ build-windows:
   script: 
   - apt install -y make gcc-mingw-w64-x86-64
   - make CC=/usr/bin/x86_64-w64-mingw32-gcc
-  - mv bin/projets5.exe ./
   artifacts:
     paths:
-      - projets5.exe
+      - bin
     expire_in: 1 week
 
 pages:
