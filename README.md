@@ -70,7 +70,7 @@ cd projects5
 ```
 
 ```bash
-make CC=/usr/bin/x86_64-w64-mingw32-gcc
+make CC=/usr/bin/x86_64-w64-mingw32-gcc TARGET=projects5.exe
 ```
 
 ### From Windows
@@ -108,13 +108,13 @@ make
 ### Linux
 
 ```bash
-./projets5
+./projects5
 ```
 
 ### Windows
 
 ```bat
-./projets5.exe
+./projects5.exe
 ```
 
 Ou lancer simplement le .exe.
