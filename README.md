@@ -1,5 +1,7 @@
 # ProjetS5
 
+Par Marc NGUYEN et Mathieu POIGNANT.
+
 - [ProjetS5](#projets5)
     - [Projet : Étude et simulation d’une file d’attente](#projet--Étude-et-simulation-dune-file-dattente)
     - [Build](#build)
@@ -13,6 +15,7 @@
     - [Usage](#usage)
         - [Linux](#linux)
         - [Windows](#windows)
+        - [Output](#output)
     - [Paramétrage](#paramétrage)
     - [Description rapide du processus de simulation](#description-rapide-du-processus-de-simulation)
     - [Documentation](#documentation)
@@ -120,6 +123,8 @@ make
 
 Ou lancer simplement le .exe.
 
+### Output
+
 Un fichier listant les clients du jour va être généré (par défaut : Simulation.txt).
 
 Les données de FICHIER_DATA sont de la forme (séparateur : espace) :
@@ -211,10 +216,12 @@ Pour plus d'information, il est conseillé d'aller voir la documentation [Doxyge
 
 Vous pouvez aller voir la [documentation](http://marc.nguyen.gitlab.emse.fr/projects5/) généré par Doxygen.
 
+Vous pouvez aussi aller voir ./html/index.html.
+
 Dans le dossier doc, il est possible de générer une documentation Doxygen.
 
 ```bash
-sudo apt install -y doxygen texlive-full
+sudo apt install -y doxygen texlive-full graphviz
 cd ./doc/
 doxygen
 ```
