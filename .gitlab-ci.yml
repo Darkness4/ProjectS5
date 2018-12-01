@@ -1,11 +1,15 @@
 image: ubuntu:18.04
 
 before_script:
-  - apt update && apt -y full-upgrade
+  - apt update
+  - apt -y full-upgrade
 
 test:
   script:
-  - doxygen doc/Doxyfile
+  - apt update
+  - apt install -y doxygen graphviz
+  - cd doc
+  - doxygen Doxyfile
   except:
   - master
 
@@ -33,7 +37,8 @@ build-windows:
 
 pages:
   script: 
-  - apt update && apt install -y doxygen graphviz
+  - apt update
+  - apt install -y doxygen graphviz
   - cd doc
   - doxygen Doxyfile
   - mv webdoc/html/ ../public/
