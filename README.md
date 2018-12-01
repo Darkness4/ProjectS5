@@ -169,7 +169,7 @@ const int MAX = 20;
  * L'arrivée d'un client suit la loi exponentielle.
  * Le principe suivant permet de générer des réalisations d’une variable
  * aléatoire X obéissant à une loi exponentielle : si U ∼ [0, 1], alors
- * X = −ln(1 − U )/λ.
+ * X = −ln(1 − U)/λ.
  */
 const float LAMBDA = 0.1;
 /**
@@ -255,5 +255,13 @@ doxygen
 
 Il est possible de générer une documentation [Doxygen m.css](https://mcss.mosra.cz/doxygen/).
 
+Liens rapides :
+
+- [main](./main_8c.html)
+- [fonction](./fonction_8c.html)
+- [manip_fichier](./manip__fichier_8c.html)
+- [tableau](./tableau_8c.html)
+
 ## License
+
 [MIT](./LICENSE)
