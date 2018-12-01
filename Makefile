@@ -44,7 +44,7 @@ $(OBJDIR)/tableau.o: $(SRCDIR)/tableau.c $(SRCDIR)/tableau.h
 
 .PHONY: clean
 clean:
-	@$(rm) $(OBJECTS)
+	@$(rm) $(OBJDIR)
 	@echo "Cleanup complete!"
 
 .PHONY: remove

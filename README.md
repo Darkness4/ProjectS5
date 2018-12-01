@@ -19,6 +19,7 @@ Par Marc NGUYEN et Mathieu POIGNANT.
     - [Paramétrage](#paramétrage)
     - [Description rapide du processus de simulation](#description-rapide-du-processus-de-simulation)
     - [Documentation](#documentation)
+    - [License](#license)
 
 ## Projet : Étude et simulation d’une file d’attente
 
@@ -62,7 +63,7 @@ cd projects5
 ```
 
 ```bash
-make
+make -j4
 ```
 
 #### Target Windows
@@ -74,7 +75,7 @@ cd projects5
 ```
 
 ```bash
-make CC=/usr/bin/x86_64-w64-mingw32-gcc TARGET=projects5.exe
+make -j4 CC=/usr/bin/x86_64-w64-mingw32-gcc TARGET=projects5.exe
 ```
 
 ### Depuis Windows
@@ -104,7 +105,7 @@ cd projects5
 ```
 
 ```bash
-make
+make -j4
 ```
 
 ## Usage
@@ -206,11 +207,39 @@ const char* FICHIER_TABLEAU = "Tableau de Bord.txt";
 ## Description rapide du processus de simulation
 
 1. Génération d'une liste chaînée.
-2. Exporter les données en txt : Arrivee, Attente, Début du service, Fin du service.
-3. Utiliser les données exportées pour calculer les métriques de performances.
-4. Exporter le tableau de bord en txt.
+
+    ```C
+    // Référence fonction.c
+    struct ListeClients *listeclients = creerListeJournaliere();
+    ```
+
+2. Exportation des données en txt : Arrivee, Attente, Début du service, Fin du service.
+
+    ```C
+    // Référence manip_fichier.c
+    ecrireList(listeclients);
+    ```
+
+3. Utilisation des données exportées pour calculer les métriques de performances.
+
+    ```C
+    // Références manip_fichier.c
+    fileMoy();
+    fileMax();
+    debMoy();
+    tauxNonTraites();
+    tempsRep();
+    ```
+
+4. Exportation du tableau de bord en txt.
+
+    ```C
+    // Référence tableau.c
+    ecrireTableau(fileMoy(), fileMax(), debMoy(), tauxNonTraites(), tempsRep());
+    ```
 
 Pour plus d'information, il est conseillé d'aller voir la documentation [Doxygen](#documentation) (ou directement dans le code).
+Vous pouvez ainsi voir la description de chaque fonctions.
 
 ## Documentation
 
@@ -225,3 +254,6 @@ doxygen
 ```
 
 Il est possible de générer une documentation [Doxygen m.css](https://mcss.mosra.cz/doxygen/).
+
+## License
+[MIT](./LICENSE)
