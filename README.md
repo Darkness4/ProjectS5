@@ -216,8 +216,6 @@ Pour plus d'information, il est conseillé d'aller voir la documentation [Doxyge
 
 Vous pouvez aller voir la [documentation](http://marc.nguyen.gitlab.emse.fr/projects5/) généré par Doxygen.
 
-Vous pouvez aussi aller voir ./html/index.html.
-
 Dans le dossier doc, il est possible de générer une documentation Doxygen.
 
 ```bash
